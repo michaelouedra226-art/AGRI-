@@ -1,0 +1,1156 @@
+Écriture
+AGRI-IA
+CAHIER DES CHARGES FONCTIONNEL, TECHNIQUE ET UX/UI
+Version : 1.0
+Statut : Document de conception initiale
+Nature : Spécifications fonctionnelles et techniques
+Marché initial : Burkina Faso
+Marché cible : Afrique
+Supports : Application mobile, application web et WhatsApp
+Positionnement : Assistant agricole intelligent, multilingue et accessible.
+1. RÉSUMÉ EXÉCUTIF
+1.1. Présentation du projet
+AGRI-IA est une plateforme technologique agricole qui utilise l'intelligence artificielle pour faciliter l'accès des agriculteurs aux connaissances, aux méthodes modernes de production et aux outils d'aide à la décision.
+La plateforme doit permettre à un agriculteur de bénéficier d'un accompagnement agricole personnalisé, quelle que soit son expérience, son niveau d'instruction, sa localisation ou sa langue.
+AGRI-IA ne doit pas être conçu comme un simple chatbot généraliste.
+Il doit devenir un véritable assistant agricole numérique, capable de comprendre les problématiques d'une exploitation, de contextualiser les réponses, de proposer des recommandations documentées et d'accompagner l'utilisateur pendant les différentes étapes de son activité.
+1.2. Vision
+Construire une infrastructure d'intelligence agricole adaptée aux réalités africaines, capable de démocratiser les connaissances scientifiques et les innovations agricoles.
+1.3. Mission
+Rendre les connaissances agricoles accessibles à tous.
+Faciliter l'adoption des techniques agricoles modernes.
+Améliorer les capacités de décision des producteurs.
+Réduire les pertes agricoles évitables.
+Favoriser une utilisation plus efficace des ressources.
+Accompagner la transformation numérique du secteur agricole africain.
+Contribuer à la sécurité alimentaire et à l'amélioration des revenus agricoles.
+1.4. Principes fondamentaux
+Accessibilité : utilisable par les débutants et les professionnels.
+Intelligence contextuelle : réponses adaptées à la situation réelle.
+Fiabilité : recommandations fondées sur des sources vérifiables.
+Inclusion linguistique : prise en charge progressive des langues africaines.
+Sobriété technologique : fonctionnement adapté aux appareils modestes et aux connexions limitées.
+Gratuité pour les agriculteurs : absence de paiement obligatoire pour accéder aux fonctions essentielles.
+Évolutivité : architecture permettant une extension à d'autres pays.
+2. PÉRIMÈTRE DU PRODUIT
+2.1. Public cible
+Agriculteurs débutants
+Personnes qui découvrent l'agriculture et recherchent des explications simples, illustrées et progressives.
+Agriculteurs expérimentés
+Producteurs souhaitant améliorer leurs méthodes, optimiser leurs ressources et accéder à des informations techniques.
+Éleveurs
+Personnes qui pratiquent l'élevage traditionnel ou moderne.
+Jeunes entrepreneurs agricoles
+Porteurs de projets recherchant des outils de planification et de gestion.
+Organisations agricoles
+Coopératives, associations, groupements et structures d'accompagnement.
+Conseillers et techniciens agricoles
+Professionnels pouvant utiliser AGRI-IA comme outil complémentaire de conseil et de formation.
+2.2. Zones géographiques
+Phase initiale : Burkina Faso.
+Extension : pays d'Afrique de l'Ouest, puis autres marchés africains.
+La localisation doit être configurable et ne doit jamais être limitée définitivement à un seul pays.
+2.3. Langues
+Langues initiales :
+Français.
+Mooré.
+Dioula.
+Fulfuldé.
+Anglais.
+L'architecture devra permettre d'ajouter les autres langues nationales burkinabè et africaines.
+Chaque langue devra disposer d'un système de validation linguistique et agricole. Une traduction automatique non vérifiée ne doit pas être considérée comme une traduction officiellement fiable.
+2.4. Plateformes
+Application Android en priorité.
+Application web responsive.
+Interface WhatsApp.
+Application iOS à prévoir dans l'évolution.
+API publique ou partenaire pour de futures intégrations.
+3. ARCHITECTURE FONCTIONNELLE GLOBALE
+AGRI-IA doit être organisée autour de six grands domaines fonctionnels.
+3.1. AGRI-ADVISOR — Assistant agricole intelligent
+Moteur conversationnel spécialisé dans l'agriculture.
+Responsabilités :
+Répondre aux questions.
+Comprendre les besoins.
+Poser des questions complémentaires.
+Adapter les réponses à la localisation.
+Proposer des plans d'action.
+Présenter des sources.
+Conserver le contexte des conversations.
+Reconnaître les limites de ses connaissances.
+3.2. AGRI-CROP — Agriculture végétale
+Gestion des cultures :
+Céréales.
+Cultures maraîchères.
+Légumineuses.
+Tubercules.
+Cultures fruitières.
+Cultures commerciales.
+Fonctions :
+Préparation du terrain.
+Choix des variétés.
+Semis et repiquage.
+Espacement.
+Fertilisation.
+Irrigation.
+Protection phytosanitaire.
+Suivi de croissance.
+Récolte.
+Stockage.
+3.3. AGRI-LIVESTOCK — Élevage
+Espèces :
+Volailles.
+Bovins.
+Ovins.
+Caprins.
+Porcins.
+Autres espèces selon les marchés.
+Fonctions :
+Alimentation.
+Reproduction.
+Suivi sanitaire.
+Hygiène.
+Biosécurité.
+Logement.
+Gestion des troupeaux.
+Suivi des performances.
+3.4. AGRI-VISION — Analyse visuelle
+Système d'analyse des photographies.
+Fonctions :
+Analyse des feuilles.
+Identification de symptômes visibles.
+Reconnaissance de cultures.
+Identification d'anomalies.
+Comparaison d'images dans le temps.
+Orientation vers un spécialiste.
+Le système doit fournir un niveau de confiance, distinguer les hypothèses des diagnostics confirmés et demander des informations complémentaires lorsque l'image ne suffit pas.
+3.5. AGRI-MANAGER — Gestion des exploitations
+Fonctions :
+Création d'exploitations.
+Gestion des parcelles.
+Gestion des cultures.
+Calendrier des activités.
+Registre des interventions.
+Gestion des stocks.
+Dépenses et recettes.
+Calcul des marges.
+Suivi des rendements.
+Historique des campagnes.
+3.6. AGRI-MARKET — Transformation et commercialisation
+Fonctions :
+Techniques de transformation.
+Conservation.
+Stockage.
+Conditionnement.
+Calcul des coûts.
+Calcul du prix de revient.
+Suivi des ventes.
+Informations sur les marchés.
+Mise en relation future avec les acheteurs.
+Les informations commerciales devront être datées, localisées et accompagnées de leur provenance.
+4. IDENTITÉ VISUELLE ET DESIGN SYSTEM
+4.1. Positionnement esthétique
+AGRI-IA doit associer trois univers :
+La nature et l'agriculture.
+La technologie et l'intelligence artificielle.
+La modernité et la confiance.
+Le résultat doit être professionnel, premium, chaleureux et accessible.
+Éviter une interface qui ressemble à un logiciel administratif ou à une application agricole vieillissante.
+Éviter également un excès d'effets futuristes qui nuiraient à la lisibilité.
+4.2. Palette de couleurs
+Palette de référence :
+Couleur
+Code
+Usage
+Forest Green
+#14532D
+Couleur principale
+Agriculture Green
+#2E7D32
+Actions principales
+Fresh Green
+#84CC16
+Indicateurs positifs
+Earth Brown
+#795548
+Références au sol
+Sand
+#F5F1E8
+Arrière-plans secondaires
+White
+#FFFFFF
+Surfaces principales
+Charcoal
+#17231D
+Texte principal
+Slate
+#64748B
+Texte secondaire
+Warning Amber
+#D97706
+Avertissements
+Danger Red
+#DC2626
+Alertes critiques
+Les couleurs devront respecter les règles d'accessibilité WCAG 2.2 AA, notamment pour le contraste des textes et des contrôles.
+4.3. Typographie
+Typographies recommandées :
+Inter pour l'interface.
+Manrope pour les titres.
+Noto Sans pour les langues et caractères particuliers.
+Les polices doivent être testées avec le mooré, le dioula, le fulfuldé et les autres systèmes d'écriture pris en charge.
+Hiérarchie :
+H1 : 32 px.
+H2 : 24 px.
+H3 : 20 px.
+Corps : 16 px.
+Texte secondaire : 14 px.
+Légendes : 12 px.
+Les tailles devront rester adaptables selon l'écran et les préférences d'accessibilité.
+4.4. Iconographie
+Utiliser une iconographie cohérente, simple et immédiatement compréhensible.
+Exemples :
+Feuille : cultures.
+Goutte : irrigation.
+Vache : élevage.
+Loupe : diagnostic.
+Calendrier : planification.
+Graphique : rendement.
+Balance : économie.
+Livre : formation.
+Assistant : intelligence artificielle.
+Les icônes devront être accompagnées de libellés, particulièrement pour les utilisateurs débutants.
+4.5. Photographie et illustration
+Privilégier :
+De vrais agriculteurs africains.
+Des cultures locales.
+Des animaux d'élevage.
+Des paysages agricoles africains.
+Des illustrations pédagogiques.
+Des photographies techniques de bonne qualité.
+Les images ne doivent pas donner une représentation artificielle ou exclusivement occidentale de l'agriculture.
+4.6. Composants UI réutilisables
+Créer une bibliothèque de composants :
+PrimaryButton.
+SecondaryButton.
+IconButton.
+SearchBar.
+VoiceInput.
+ChatMessage.
+AIResponseCard.
+SourceCitation.
+CropCard.
+LivestockCard.
+FarmCard.
+PlotCard.
+WeatherCard.
+TaskCard.
+CalendarEvent.
+DiagnosisCard.
+ConfidenceIndicator.
+AlertBanner.
+EmptyState.
+LoadingSkeleton.
+OfflineBanner.
+BottomNavigation.
+BottomSheet.
+ConfirmationDialog.
+LanguageSelector.
+Chaque composant doit avoir ses états :
+Normal.
+Survolé sur les interfaces compatibles.
+Pressé.
+Focus.
+Désactivé.
+Chargement.
+Erreur.
+Succès.
+5. STRUCTURE DE NAVIGATION
+5.1. Navigation mobile principale
+Prévoir une barre de navigation inférieure à cinq entrées :
+Accueil.
+Assistant.
+Mon exploitation.
+Découvrir.
+Profil.
+L'assistant doit être facilement accessible depuis toutes les sections.
+5.2. Navigation web
+Interface à navigation latérale :
+Tableau de bord.
+Assistant IA.
+Cultures.
+Élevage.
+Diagnostic.
+Gestion agricole.
+Marchés.
+Formation.
+Historique.
+Paramètres.
+La navigation devra être adaptée aux rôles et permissions de l'utilisateur.
+6. SPÉCIFICATIONS DÉTAILLÉES DES ÉCRANS
+ÉCRAN 01 — SPLASH SCREEN
+Objectif
+Créer une première impression professionnelle et installer l'identité de AGRI-IA.
+Composition
+Logo AGRI-IA au centre.
+Symbole combinant une feuille, une racine et un élément technologique.
+Nom de la plateforme.
+Signature : « L'intelligence au service de vos cultures ».
+Animation discrète.
+Animation
+Le symbole apparaît progressivement.
+Une ligne lumineuse suit la forme de la feuille.
+Le nom AGRI-IA apparaît ensuite.
+Durée recommandée : environ 1 à 2 secondes, sans imposer une attente inutile.
+Micro-interactions
+Transition douce.
+Respect des paramètres de réduction des animations.
+Vérification silencieuse de la disponibilité de la session.
+ÉCRAN 02 — ONBOARDING
+Objectif
+Présenter AGRI-IA et expliquer rapidement sa valeur.
+Trois écrans pédagogiques.
+Slide 1 : Votre assistant agricole
+Illustration d'un agriculteur utilisant son téléphone.
+Texte :
+« Obtenez des conseils agricoles adaptés à votre exploitation. »
+Slide 2 : Comprenez vos cultures
+Illustration d'une feuille analysée par intelligence artificielle.
+Texte :
+« Photographiez vos cultures et obtenez une première analyse des symptômes observés. »
+Slide 3 : Gérez votre exploitation
+Illustration d'un tableau de bord agricole.
+Texte :
+« Planifiez vos activités, suivez vos dépenses et améliorez vos décisions. »
+Contrôles
+Passer.
+Continuer.
+Indicateur de progression.
+Commencer.
+Micro-interactions
+Glissement horizontal.
+Animation des illustrations.
+Indicateur de progression animé.
+Conservation de la progression si l'utilisateur quitte l'application.
+ÉCRAN 03 — SÉLECTION DE LA LANGUE
+Objectif
+Permettre à l'utilisateur de choisir sa langue dès le début.
+Composition
+Titre :
+« Dans quelle langue souhaitez-vous utiliser AGRI-IA ? »
+Liste :
+Français.
+Mooré.
+Dioula.
+Fulfuldé.
+Anglais.
+Autres langues disponibles.
+Chaque langue apparaît dans une carte avec son nom dans la langue concernée lorsque cela est possible.
+Microfonctionnalités
+Recherche de langue.
+Aperçu d'un message traduit.
+Changement ultérieur dans les paramètres.
+Mémorisation de la préférence.
+Possibilité de choisir une langue de réponse différente de la langue de navigation.
+La sélection d'une langue ne doit pas automatiquement supposer que l'utilisateur maîtrise cette langue à l'écrit.
+ÉCRAN 04 — INSCRIPTION ET AUTHENTIFICATION
+Objectif
+Créer un compte de manière simple.
+Modes d'inscription
+Numéro de téléphone.
+Adresse e-mail.
+Connexion par fournisseur tiers si disponible.
+Le numéro de téléphone doit être adapté au format international.
+Formulaire
+Champs :
+Nom.
+Prénom.
+Téléphone.
+E-mail facultatif.
+Mot de passe ou authentification par code selon le mécanisme retenu.
+Langue préférée.
+Acceptation des conditions.
+Micro-interactions
+Validation en temps réel.
+Détection du format incorrect.
+Indicateur de chargement.
+Confirmation de code.
+Renvoi du code avec délai.
+Messages d'erreur explicites.
+Protection contre les tentatives répétées.
+Sécurité
+Hachage des mots de passe.
+Gestion des sessions.
+Révocation des appareils.
+Limitation des tentatives.
+Authentification multifacteur pour les comptes sensibles.
+ÉCRAN 05 — PROFIL AGRICOLE INITIAL
+Objectif
+Comprendre le contexte de l'agriculteur pour personnaliser les réponses.
+Étape 1 : Profil
+Agriculteur.
+Éleveur.
+Agriculteur et éleveur.
+Étudiant agricole.
+Conseiller.
+Entrepreneur agricole.
+Étape 2 : Localisation
+Pays.
+Région.
+Province ou département.
+Commune.
+Village facultatif.
+La géolocalisation doit être facultative et soumise au consentement.
+Étape 3 : Expérience
+Débutant.
+Intermédiaire.
+Expérimenté.
+Professionnel.
+Étape 4 : Activités
+Sélection multiple :
+Maïs.
+Mil.
+Sorgho.
+Riz.
+Niébé.
+Tomate.
+Oignon.
+Manioc.
+Élevage de volailles.
+Bovins.
+Ovins.
+Caprins.
+Autres.
+Étape 5 : Objectifs
+Augmenter le rendement.
+Réduire les coûts.
+Prévenir les maladies.
+Améliorer la fertilité.
+Économiser l'eau.
+Développer une activité commerciale.
+Apprendre les méthodes modernes.
+Micro-interactions
+Formulaire progressif.
+Sauvegarde automatique.
+Suggestions selon les réponses.
+Barre de progression.
+Possibilité de passer certaines questions.
+Confirmation du profil avant validation.
+Le profil doit pouvoir être modifié à tout moment.
+ÉCRAN 06 — ACCUEIL / DASHBOARD
+Objectif
+Offrir une vue synthétique et immédiatement utile de l'activité agricole.
+Structure visuelle
+A. Header
+En haut :
+Salutation personnalisée.
+Nom de l'utilisateur.
+Date.
+Icône de notifications.
+Avatar.
+Exemple :
+« Bonjour Amadou, comment se porte votre exploitation aujourd'hui ? »
+B. Barre météo
+Carte météorologique contenant :
+Température.
+Probabilité de pluie.
+Humidité lorsque disponible.
+Prévisions.
+Localisation.
+Date et heure de mise à jour.
+Microfonctionnalité :
+En cas de pluie annoncée, afficher une alerte contextuelle :
+« Une pluie est prévue selon la dernière prévision. Consultez les conditions avant de planifier vos traitements. »
+Ne jamais transformer une prévision en certitude.
+C. Assistant intelligent
+Grande carte centrale.
+Texte :
+« Que souhaitez-vous savoir aujourd'hui ? »
+Champ de saisie :
+« Posez votre question agricole... »
+Actions :
+Écrire.
+Parler.
+Photographier.
+Joindre un document.
+D. Accès rapides
+Cartes :
+Diagnostiquer une plante.
+Demander un conseil.
+Calculer mes dépenses.
+Planifier une culture.
+Consulter la météo.
+Apprendre une technique.
+E. Mon exploitation
+Résumé :
+Nombre de parcelles.
+Cultures actives.
+Tâches à réaliser.
+Dépenses enregistrées.
+État des campagnes.
+F. Conseils du jour
+Contenus courts et personnalisés.
+Exemples :
+Comment préparer une pépinière.
+Comment conserver les semences.
+Comment réduire les pertes d'eau.
+Chaque conseil doit comporter une source ou une indication claire de son statut pédagogique.
+G. Navigation inférieure
+Accueil, Assistant, Exploitation, Découvrir, Profil.
+ÉCRAN 07 — ASSISTANT AGRI-IA
+Objectif
+Constituer le cœur de l'expérience utilisateur.
+L'assistant doit permettre des conversations naturelles et contextualisées.
+Interface
+Header :
+Nom AGRI-IA.
+Statut de disponibilité.
+Historique.
+Nouvelle conversation.
+Menu de paramètres.
+Zone de conversation :
+Messages utilisateur à droite.
+Messages AGRI-IA à gauche.
+Heure.
+État de livraison.
+Pièces jointes.
+Zone de saisie :
+Champ texte.
+Bouton micro.
+Bouton photo.
+Bouton document.
+Bouton d'envoi.
+Fonctionnalités conversationnelles
+Compréhension contextuelle
+L'IA doit comprendre les messages précédents.
+Exemple :
+Utilisateur : « Je cultive du maïs. »
+Utilisateur : « Mes feuilles jaunissent. »
+L'assistant doit comprendre que la question concerne le maïs mentionné précédemment.
+Questions complémentaires intelligentes
+L'IA ne doit pas systématiquement donner une réponse définitive.
+Elle doit demander les informations nécessaires :
+Quelle culture ?
+Quelle variété ?
+Quelle région ?
+Quel stade de développement ?
+Quel type de sol ?
+Quel symptôme ?
+Depuis combien de temps ?
+Les questions doivent être adaptées au problème.
+Réponses structurées
+Chaque réponse importante doit pouvoir contenir :
+Résumé.
+Explication.
+Causes possibles.
+Vérifications nécessaires.
+Solutions recommandées.
+Précautions.
+Sources.
+Niveau de confiance ou limites.
+Actions après réponse
+Boutons :
+Écouter.
+Copier.
+Partager.
+Enregistrer.
+Poser une question complémentaire.
+Signaler une réponse.
+Consulter les sources.
+Mémoire conversationnelle
+Conserver les informations utiles au suivi d'une exploitation avec consentement.
+Permettre à l'utilisateur de consulter, modifier et supprimer ses informations.
+Micro-interactions
+Animation discrète pendant la génération.
+Indicateur de progression non trompeur.
+Affichage progressif des réponses.
+Détection des messages incomplets.
+Suggestions contextuelles.
+Raccourcis vers les actions pertinentes.
+Possibilité d'interrompre la génération.
+Reprise après coupure réseau.
+Gestion des messages en attente.
+Ne pas afficher un faux pourcentage de progression lorsque le système ne dispose pas de cette information.
+ÉCRAN 08 — AGRI-VISION / DIAGNOSTIC PAR IMAGE
+Objectif
+Analyser visuellement les cultures et les symptômes.
+Écran d'accueil
+Titre :
+« Que souhaitez-vous analyser ? »
+Choix :
+Une feuille.
+Une plante entière.
+Un fruit.
+Une tige.
+Un animal.
+Un autre élément agricole.
+Capture photographique
+Fonctions :
+Prendre une photo.
+Importer une image.
+Reprendre la photo.
+Ajouter plusieurs angles.
+Ajouter une description.
+Sélectionner la culture.
+Aide à la photographie
+Afficher des instructions :
+Photographier en lumière suffisante.
+Éviter le flou.
+Montrer les parties touchées.
+Ajouter une image de la plante entière.
+Éviter les filtres.
+Micro-interaction :
+Un cadre visuel indique si la photographie est correctement positionnée, lorsque l'appareil le permet.
+Analyse
+États :
+Image reçue.
+Qualité vérifiée.
+Image analysée.
+Résultats possibles identifiés.
+Informations complémentaires demandées si nécessaires.
+Écran de résultats
+Afficher :
+Image analysée.
+Culture identifiée ou déclarée.
+Symptômes visibles.
+Hypothèses principales.
+Hypothèses alternatives.
+Informations manquantes.
+Niveau de confiance calibré.
+Conseils de vérification.
+Recommandations prudentes.
+Sources documentaires.
+Sécurité
+Un diagnostic visuel n'est pas automatiquement une confirmation médicale ou agronomique.
+Le système doit pouvoir dire :
+« Cette photographie ne permet pas d'identifier le problème avec suffisamment de certitude. »
+Les recommandations de traitement doivent tenir compte des homologations locales, des conditions d'utilisation et des risques pour les personnes, les animaux et l'environnement.
+ÉCRAN 09 — AGRI-CROP / GESTION DES CULTURES
+Objectif
+Offrir une bibliothèque de cultures et un accompagnement par cycle de production.
+Catalogue
+Catégories :
+Céréales.
+Légumineuses.
+Maraîchage.
+Tubercules.
+Arboriculture.
+Cultures commerciales.
+Chaque culture possède une fiche détaillée.
+Fiche culture
+Contenu :
+Nom courant.
+Nom scientifique.
+Variétés.
+Conditions climatiques.
+Types de sols.
+Préparation du terrain.
+Calendrier.
+Semis.
+Entretien.
+Fertilisation.
+Irrigation.
+Maladies.
+Ravageurs.
+Récolte.
+Stockage.
+Rendements indicatifs documentés.
+Cycle de production
+Représentation visuelle chronologique :
+Préparation.
+Semis.
+Levée.
+Croissance végétative.
+Floraison.
+Formation des fruits ou grains.
+Maturation.
+Récolte.
+Conservation.
+Les phases doivent être configurables selon la culture et la variété.
+Microfonctionnalités
+Ajouter une culture aux favoris.
+Ajouter à mon exploitation.
+Créer un calendrier.
+Définir une date de semis.
+Ajouter des photos de suivi.
+Enregistrer une intervention.
+Recevoir un rappel.
+Consulter les difficultés fréquentes.
+Comparer les méthodes de production.
+ÉCRAN 10 — AGRI-LIVESTOCK / ÉLEVAGE
+Objectif
+Fournir un accompagnement technique adapté aux éleveurs.
+Catalogue
+Poulets locaux.
+Poulets de chair.
+Poules pondeuses.
+Bovins.
+Ovins.
+Caprins.
+Autres espèces.
+Fiche élevage
+Informations :
+Espèce.
+Race ou type.
+Âge.
+Effectif.
+Alimentation.
+Logement.
+Hygiène.
+Reproduction.
+Suivi sanitaire.
+Performances.
+Fonctions
+Création d'un élevage.
+Enregistrement des animaux.
+Suivi des effectifs.
+Suivi des naissances.
+Suivi des mortalités.
+Suivi alimentaire.
+Calendrier sanitaire.
+Dépenses.
+Ventes.
+Historique.
+Alertes
+Stock alimentaire faible.
+Activité sanitaire programmée.
+Mortalité enregistrée.
+Suivi nécessaire.
+Les recommandations sanitaires doivent intégrer une orientation vers un vétérinaire lorsque nécessaire.
+ÉCRAN 11 — AGRI-MANAGER / MON EXPLOITATION
+Objectif
+Transformer AGRI-IA en outil de gestion agricole.
+Tableau de bord
+Indicateurs :
+Surface exploitée.
+Parcelles actives.
+Cultures en cours.
+Effectifs animaux.
+Dépenses.
+Recettes.
+Rendements enregistrés.
+Tâches en retard.
+Gestion des parcelles
+Chaque parcelle possède :
+Nom.
+Localisation.
+Surface.
+Type de sol.
+Culture.
+Date de préparation.
+Date de semis.
+Historique.
+Photos.
+Observations.
+La saisie de la surface doit accepter les unités courantes : m², hectare et autres unités configurées.
+Journal agricole
+Enregistrer :
+Labour.
+Semis.
+Arrosage.
+Fertilisation.
+Désherbage.
+Traitement.
+Récolte.
+Vente.
+Autres interventions.
+Chaque intervention doit avoir :
+Date.
+Parcelle.
+Type.
+Quantité.
+Unité.
+Coût.
+Description.
+Justificatif facultatif.
+Calendrier intelligent
+Vue :
+Journalière.
+Hebdomadaire.
+Mensuelle.
+Événements :
+Travaux programmés.
+Semis.
+Irrigation.
+Suivi.
+Récolte.
+Rendez-vous.
+Alertes.
+Micro-interactions :
+Glisser pour déplacer un événement.
+Confirmation avant suppression.
+Marquer une tâche terminée.
+Replanification intelligente en cas de retard.
+Proposition de nouvelle date selon les contraintes disponibles.
+Toute replanification doit être confirmée par l'utilisateur.
+ÉCRAN 12 — AGRI-WATER / IRRIGATION ET SOLS
+Objectif
+Aider à optimiser la gestion des ressources hydriques et pédologiques.
+Modules
+Sols
+Texture.
+Structure.
+pH.
+Matière organique.
+Fertilité.
+Drainage.
+Érosion.
+Les informations de laboratoire doivent être distinguées des estimations visuelles.
+Irrigation
+Goutte-à-goutte.
+Aspersion.
+Gravitaire.
+Arrosage manuel.
+Autres systèmes.
+Fonctions :
+Calculs de besoins hydriques selon les données disponibles.
+Estimation des volumes.
+Planification.
+Comparaison des systèmes.
+Suivi des consommations.
+Les calculs devront intégrer la culture, le stade de développement, les caractéristiques du sol, la météo et les hypothèses utilisées.
+Calculateur
+Entrées :
+Surface.
+Culture.
+Type de sol.
+Système d'irrigation.
+Données météorologiques disponibles.
+Sorties :
+Estimation du besoin.
+Volume indicatif.
+Hypothèses.
+Marge d'incertitude.
+Conseils.
+ÉCRAN 13 — AGRI-MARKET
+Objectif
+Faciliter les décisions économiques et commerciales.
+Modules
+Prix et marchés
+Produit.
+Marché.
+Localité.
+Prix.
+Unité.
+Date d'observation.
+Source.
+Type de prix.
+Calculateur économique
+Entrées :
+Surface.
+Semences.
+Engrais.
+Main-d'œuvre.
+Eau.
+Transport.
+Autres charges.
+Sorties :
+Coût total.
+Coût par unité.
+Production estimée.
+Chiffre d'affaires.
+Marge brute.
+Bénéfice estimatif selon les charges enregistrées.
+Les résultats devront distinguer les estimations des données réellement observées.
+Transformation
+Guides sur :
+Séchage.
+Conservation.
+Transformation.
+Conditionnement.
+Hygiène.
+Stockage.
+Commercialisation
+Prévoir une future place de marché permettant la mise en relation entre producteurs, acheteurs, transformateurs et fournisseurs.
+Cette place de marché constitue une extension et non une dépendance du premier lancement.
+ÉCRAN 14 — AGRI-LEARN / FORMATION
+Objectif
+Faire de AGRI-IA une plateforme de formation agricole continue.
+Organisation
+Catégories :
+Débuter en agriculture.
+Techniques modernes.
+Cultures.
+Élevage.
+Protection des cultures.
+Irrigation.
+Entrepreneuriat agricole.
+Transformation.
+Format pédagogique
+Chaque cours comporte :
+Objectif.
+Prérequis.
+Leçon.
+Illustrations.
+Vidéo facultative.
+Exemples locaux.
+Exercices.
+Quiz.
+Résumé.
+Ressources complémentaires.
+Progression
+Pourcentage d'avancement.
+Leçons terminées.
+Exercices réussis.
+Historique.
+Certificat facultatif pour les formations réellement évaluées.
+Ne pas délivrer de certification officielle sans organisme habilité.
+ÉCRAN 15 — NOTIFICATIONS
+Types
+Rappels de tâches.
+Événements agricoles.
+Alertes météo.
+Suivis de cultures.
+Réponses de l'assistant.
+Nouvelles formations.
+Paramètres
+L'utilisateur peut choisir :
+Les catégories.
+Les heures.
+La fréquence.
+Les canaux.
+Les notifications silencieuses.
+Éviter les notifications excessives.
+Chaque notification doit être utile, compréhensible et reliée à une action.
+ÉCRAN 16 — PROFIL ET PARAMÈTRES
+Profil
+Informations personnelles.
+Profil agricole.
+Exploitations.
+Langue.
+Région.
+Préférences.
+Paramètres
+Confidentialité.
+Sécurité.
+Notifications.
+Accessibilité.
+Taille des textes.
+Mode sombre.
+Gestion des données.
+Export des informations.
+Suppression du compte.
+Déconnexion.
+Prévoir un centre d'aide et une politique de confidentialité claire.
+7. MICRO-INTERACTIONS INTELLIGENTES
+Les micro-interactions ne doivent pas être uniquement décoratives. Elles doivent réduire les efforts de l'utilisateur et l'aider à accomplir ses tâches.
+7.1. Intelligence contextuelle
+Exemple :
+Un utilisateur consulte plusieurs fois les informations sur la tomate.
+AGRI-IA peut proposer :
+« Souhaitez-vous ajouter la tomate à votre exploitation pour suivre son développement ? »
+Cette suggestion doit être non intrusive.
+7.2. Suggestions adaptatives
+Si l'utilisateur enregistre une culture de maïs, proposer :
+Créer un calendrier.
+Enregistrer la surface.
+Définir une date de semis.
+Consulter les besoins en eau.
+7.3. Détection des informations manquantes
+Si l'agriculteur demande un dosage d'engrais sans préciser la surface ou le type de produit, le système doit demander les informations manquantes.
+Ne jamais inventer ces valeurs.
+7.4. Compréhension des erreurs
+Si une personne écrit un message incomplet ou comporte des fautes, l'assistant doit essayer de comprendre sans exiger une formulation parfaite.
+7.5. Suggestions après diagnostic
+Après une analyse d'image :
+Enregistrer le résultat.
+Ajouter une observation.
+Suivre l'évolution.
+Consulter un expert.
+7.6. Micro-interactions universelles
+Retour haptique léger.
+Animation de confirmation.
+Sauvegarde automatique.
+Indicateur de connexion.
+Reprise des actions après interruption.
+Confirmation des opérations sensibles.
+État vide pédagogique.
+Suggestions intelligentes.
+Réduction des étapes inutiles.
+Toutes les animations doivent rester rapides et sobres.
+8. ARCHITECTURE TECHNIQUE
+8.1. Principe architectural
+Adopter une architecture modulaire, API-first, avec séparation des responsabilités.
+Pour le lancement, privilégier un monolithe modulaire plutôt que des microservices distribués trop complexes et coûteux.
+Les modules doivent être isolés logiquement afin de pouvoir être extraits ultérieurement.
+8.2. Architecture logique
+Couche présentation
+Application mobile.
+Application web.
+Interface WhatsApp.
+Couche API
+Authentification.
+Gestion des utilisateurs.
+Gestion des exploitations.
+Conversations.
+Cultures.
+Élevage.
+Diagnostics.
+Notifications.
+Couche intelligence
+Orchestrateur IA.
+Gestion des conversations.
+Recherche documentaire.
+Analyse visuelle.
+Traduction.
+Génération des réponses.
+Vérification des sources.
+Gestion des risques.
+Couche données
+Base relationnelle.
+Base vectorielle.
+Stockage des fichiers.
+Cache.
+Journaux techniques.
+8.3. Technologies recommandées
+Frontend mobile
+Flutter ou React Native.
+Recommandation initiale : Flutter pour disposer d'une base de code mobile commune.
+Frontend web
+Next.js et TypeScript.
+Backend
+Python avec FastAPI.
+Base de données
+PostgreSQL.
+Recherche vectorielle
+pgvector pour démarrer avec une infrastructure relativement simple.
+Cache et tâches asynchrones
+Redis et un système de tâches adapté aux besoins.
+Stockage
+Stockage objet compatible S3 pour les photos et documents.
+Déploiement
+Conteneurs Docker, intégration continue et hébergement cloud évolutif.
+Le choix final dépendra des compétences disponibles, des coûts et des contraintes d'hébergement.
+9. ARCHITECTURE DE L'INTELLIGENCE ARTIFICIELLE
+9.1. Orchestrateur AGRI-IA
+Créer un service central qui analyse chaque requête et décide des traitements nécessaires.
+Étapes :
+Recevoir la demande.
+Identifier la langue.
+Déterminer le domaine agricole.
+Récupérer le contexte utilisateur autorisé.
+Identifier les informations manquantes.
+Rechercher les documents pertinents.
+Appeler le modèle approprié.
+Vérifier la cohérence et les risques.
+Structurer la réponse.
+Enregistrer les événements nécessaires.
+9.2. Système RAG
+Mettre en place une architecture Retrieval-Augmented Generation.
+Pipeline documentaire :
+Importation.
+Vérification de provenance et de droits.
+Extraction du texte.
+Nettoyage.
+Découpage en segments.
+Indexation.
+Embeddings.
+Recherche.
+Classement des résultats.
+Transmission au modèle.
+Chaque document devra comporter :
+Titre.
+Auteur ou organisme.
+Date.
+Pays.
+Langue.
+Domaine.
+Culture ou espèce.
+Version.
+Niveau de validation.
+Référence d'origine.
+9.3. Gestion des sources
+Hiérarchie de confiance :
+Institutions de recherche et organismes officiels.
+Publications scientifiques.
+Guides techniques validés.
+Experts agricoles qualifiés.
+Autres ressources clairement identifiées.
+L'IA doit citer les références réellement utilisées et ne jamais inventer une source.
+9.4. Gestion des risques
+Créer un classificateur de risques pour distinguer :
+Question pédagogique.
+Question agronomique courante.
+Recommandation technique sensible.
+Diagnostic incertain.
+Urgence vétérinaire ou phytosanitaire.
+Situation potentiellement dangereuse.
+Les demandes à risque élevé doivent déclencher des garde-fous spécifiques.
+9.5. Architecture multimodale
+Prévoir progressivement :
+Texte.
+Image.
+Audio.
+Transcription vocale.
+Synthèse vocale.
+Documents.
+Ne pas imposer un seul modèle d'IA. Utiliser une couche d'abstraction permettant de changer de fournisseur ou d'utiliser des modèles spécialisés.
+9.6. Gestion des coûts IA
+Limitation des tokens.
+Cache des réponses pédagogiques réutilisables.
+Choix du modèle selon la complexité.
+Limitation des appels inutiles.
+Traitement asynchrone des images lourdes.
+Suivi du coût par utilisateur et par fonctionnalité.
+Détection des abus.
+La gratuité pour l'agriculteur doit être financée et maîtrisée économiquement. Elle ne signifie pas que l'infrastructure est sans coût.
+10. MODÈLE DE DONNÉES
+Entités principales :
+Utilisateurs
+id
+first_name
+last_name
+phone
+email
+preferred_language
+experience_level
+created_at
+Exploitations
+id
+owner_id
+name
+country
+region
+commune
+location
+total_area
+created_at
+Parcelles
+id
+farm_id
+name
+area
+soil_type
+geometry
+current_crop_id
+Cultures
+id
+name
+scientific_name
+category
+description
+Campagnes
+id
+plot_id
+crop_id
+variety
+planting_date
+expected_harvest_date
+actual_harvest_date
+status
+Interventions
+id
+campaign_id
+type
+date
+quantity
+unit
+cost
+notes
+Élevages
+id
+farm_id
+species
+breed
+animal_count
+start

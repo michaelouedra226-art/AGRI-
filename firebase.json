@@ -1,0 +1,8 @@
+{
+  "firestore": [
+    {
+      "database": "ai-studio-android-agriia-d01a091e-4bec-4b59-bcf9-0729154c38c4",
+      "rules": "firestore.rules"
+    }
+  ]
+}

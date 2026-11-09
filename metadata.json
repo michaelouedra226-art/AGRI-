@@ -1,0 +1,6 @@
+{
+  "name": "AGRI-IA",
+  "description": "Assistant agricole intelligent, multilingue et accessible",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
