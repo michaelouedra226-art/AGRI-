@@ -76,6 +76,7 @@ import com.example.viewmodel.ThemePreference
 @Composable
 fun ProfileScreen(
     viewModel: MainViewModel,
+    isGuest: Boolean = false,
     onSignedOut: () -> Unit
 ) {
     val context = LocalContext.current
@@ -171,9 +172,9 @@ fun ProfileScreen(
 
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         StatusBadge(
-                            text = "Cloud Firestore Actif",
+                            text = if (isGuest) "Mode Local (Cet appareil)" else "Cloud Firestore Actif",
                             containerColor = Color(0xFF1E3A24),
-                            contentColor = FreshGreen
+                            contentColor = if (isGuest) Color(0xFFFFD54F) else FreshGreen
                         )
                         StatusBadge(
                             text = userProfile?.experienceLevel ?: "Intermédiaire",
@@ -347,11 +348,15 @@ fun ProfileScreen(
         item {
             Button(
                 onClick = {
-                    AuthManager.signOut(
-                        credentialManager = credentialManager,
-                        scope = coroutineScope,
-                        onSignOutComplete = onSignedOut
-                    )
+                    if (isGuest) {
+                        onSignedOut()
+                    } else {
+                        AuthManager.signOut(
+                            credentialManager = credentialManager,
+                            scope = coroutineScope,
+                            onSignOutComplete = onSignedOut
+                        )
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -365,7 +370,7 @@ fun ProfileScreen(
             ) {
                 Icon(imageVector = Icons.AutoMirrored.Filled.ExitToApp, contentDescription = null, tint = Color(0xFFDC2626))
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Se déconnecter", fontWeight = FontWeight.Bold, color = Color(0xFFDC2626))
+                Text(if (isGuest) "Quitter le mode local" else "Se déconnecter", fontWeight = FontWeight.Bold, color = Color(0xFFDC2626))
             }
         }
 

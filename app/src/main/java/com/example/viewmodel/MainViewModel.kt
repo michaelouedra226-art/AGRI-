@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data.api.AgnesMessage
-import com.example.data.model.AgronomicData
 import com.example.data.model.DiagnosisRecord
 import com.example.data.model.FarmIntervention
 import com.example.data.model.FarmPlot
@@ -19,6 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 sealed interface UiMessage {
     val id: String
@@ -28,7 +28,7 @@ sealed interface UiMessage {
 }
 
 data class ChatMessageItem(
-    override val id: String = java.util.UUID.randomUUID().toString(),
+    override val id: String = UUID.randomUUID().toString(),
     override val role: String,
     override val content: String,
     override val timestamp: Long = System.currentTimeMillis()
@@ -117,6 +117,18 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         initUserDataObservers()
     }
 
+    fun onGuestModeActivated() {
+        if (_userProfile.value == null) {
+            _userProfile.value = UserProfile(
+                userId = "local_guest",
+                name = "Mon Exploitation (Mode Local)",
+                email = "",
+                region = "Centre (Ouagadougou)",
+                preferredLanguage = "fr"
+            )
+        }
+    }
+
     private fun initUserDataObservers() {
         val user = try {
             Firebase.auth.currentUser
@@ -142,7 +154,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                         region = "Centre (Ouagadougou)",
                         preferredLanguage = "fr"
                     )
-                    firestoreRepo.saveUserProfile(defaultProfile)
+                    try {
+                        firestoreRepo.saveUserProfile(defaultProfile)
+                    } catch (e: Exception) {
+                        // Keep going
+                    }
                 }
             }
         }
@@ -261,18 +277,21 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                         isAnalyzing = false,
                         latestDiagnosis = diagnosisText
                     )
-                    // Save to Firestore
+                    val record = DiagnosisRecord(
+                        id = UUID.randomUUID().toString(),
+                        cropName = crop,
+                        partAffected = part,
+                        symptoms = symptoms,
+                        diagnosisResult = diagnosisText,
+                        confidence = 88L
+                    )
+                    _diagnoses.value = listOf(record) + _diagnoses.value
                     try {
-                        val record = DiagnosisRecord(
-                            cropName = crop,
-                            partAffected = part,
-                            symptoms = symptoms,
-                            diagnosisResult = diagnosisText,
-                            confidence = 88L
-                        )
-                        firestoreRepo.saveDiagnosis(record)
+                        if (Firebase.auth.currentUser != null) {
+                            firestoreRepo.saveDiagnosis(record)
+                        }
                     } catch (e: Exception) {
-                        // Keep going if local save fails
+                        // Local save is already effective
                     }
                 },
                 onFailure = { err ->
@@ -287,66 +306,87 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     // --- FARM OPERATIONS ---
     fun addPlot(name: String, crop: String, area: Double, soilType: String, irrigation: String) {
+        val plot = FarmPlot(
+            id = UUID.randomUUID().toString(),
+            name = name,
+            cropName = crop,
+            areaHectares = area,
+            soilType = soilType,
+            irrigationType = irrigation,
+            status = "En croissance"
+        )
+        // Immediate local state update
+        _plots.value = listOf(plot) + _plots.value.filter { it.name != name }
+
         viewModelScope.launch {
             try {
-                val plot = FarmPlot(
-                    name = name,
-                    cropName = crop,
-                    areaHectares = area,
-                    soilType = soilType,
-                    irrigationType = irrigation,
-                    status = "En croissance"
-                )
-                firestoreRepo.addPlot(plot)
+                if (Firebase.auth.currentUser != null) {
+                    firestoreRepo.addPlot(plot)
+                }
             } catch (e: Exception) {
-                // Log or handle
+                android.util.Log.e("MainViewModel", "Erreur Firestore addPlot: ${e.message}")
             }
         }
     }
 
     fun deletePlot(plotId: String) {
+        _plots.value = _plots.value.filter { it.id != plotId }
         viewModelScope.launch {
             try {
-                firestoreRepo.deletePlot(plotId)
+                if (Firebase.auth.currentUser != null) {
+                    firestoreRepo.deletePlot(plotId)
+                }
             } catch (e: Exception) {
-                // Log or handle
+                android.util.Log.e("MainViewModel", "Erreur Firestore deletePlot: ${e.message}")
             }
         }
     }
 
     fun addIntervention(plotId: String, plotName: String, type: String, quantity: String, cost: Long, notes: String) {
+        val dateStr = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault()).format(java.util.Date())
+        val intervention = FarmIntervention(
+            id = UUID.randomUUID().toString(),
+            plotId = plotId,
+            plotName = plotName,
+            type = type,
+            date = dateStr,
+            quantity = quantity,
+            costCfa = cost,
+            notes = notes
+        )
+        // Immediate local state update
+        _interventions.value = listOf(intervention) + _interventions.value
+
         viewModelScope.launch {
             try {
-                val dateStr = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault()).format(java.util.Date())
-                val intervention = FarmIntervention(
-                    plotId = plotId,
-                    plotName = plotName,
-                    type = type,
-                    date = dateStr,
-                    quantity = quantity,
-                    costCfa = cost,
-                    notes = notes
-                )
-                firestoreRepo.addIntervention(intervention)
+                if (Firebase.auth.currentUser != null) {
+                    firestoreRepo.addIntervention(intervention)
+                }
             } catch (e: Exception) {
-                // Log or handle
+                android.util.Log.e("MainViewModel", "Erreur Firestore addIntervention: ${e.message}")
             }
         }
     }
 
     fun addLivestock(species: String, breed: String, count: Long, housing: String, notes: String) {
+        val item = LivestockGroup(
+            id = UUID.randomUUID().toString(),
+            species = species,
+            breed = breed,
+            count = count,
+            housingType = housing,
+            healthNotes = notes
+        )
+        // Immediate local state update
+        _livestock.value = listOf(item) + _livestock.value
+
         viewModelScope.launch {
             try {
-                val item = LivestockGroup(
-                    species = species,
-                    breed = breed,
-                    count = count,
-                    housingType = housing,
-                    healthNotes = notes
-                )
-                firestoreRepo.addLivestock(item)
+                if (Firebase.auth.currentUser != null) {
+                    firestoreRepo.addLivestock(item)
+                }
             } catch (e: Exception) {
-                // Log or handle
+                android.util.Log.e("MainViewModel", "Erreur Firestore addLivestock: ${e.message}")
             }
         }
     }
@@ -355,8 +395,16 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         _currentLanguage.value = langCode
         val current = _userProfile.value
         if (current != null) {
+            val updated = current.copy(preferredLanguage = langCode)
+            _userProfile.value = updated
             viewModelScope.launch {
-                firestoreRepo.saveUserProfile(current.copy(preferredLanguage = langCode))
+                try {
+                    if (Firebase.auth.currentUser != null) {
+                        firestoreRepo.saveUserProfile(updated)
+                    }
+                } catch (e: Exception) {
+                    // Ignore
+                }
             }
         }
     }
@@ -364,8 +412,16 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun updateRegion(region: String) {
         val current = _userProfile.value
         if (current != null) {
+            val updated = current.copy(region = region)
+            _userProfile.value = updated
             viewModelScope.launch {
-                firestoreRepo.saveUserProfile(current.copy(region = region))
+                try {
+                    if (Firebase.auth.currentUser != null) {
+                        firestoreRepo.saveUserProfile(updated)
+                    }
+                } catch (e: Exception) {
+                    // Ignore
+                }
             }
         }
     }
@@ -379,7 +435,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         experienceLevel: String
     ) {
         val current = _userProfile.value
-        val userId = current?.userId ?: Firebase.auth.currentUser?.uid ?: ""
+        val userId = current?.userId ?: Firebase.auth.currentUser?.uid ?: "local_guest"
         val email = current?.email ?: Firebase.auth.currentUser?.email ?: ""
         val updated = (current ?: UserProfile(userId = userId, email = email)).copy(
             name = name,
@@ -389,11 +445,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             farmObjective = farmObjective,
             experienceLevel = experienceLevel
         )
+        _userProfile.value = updated
         viewModelScope.launch {
             try {
-                firestoreRepo.saveUserProfile(updated)
+                if (Firebase.auth.currentUser != null) {
+                    firestoreRepo.saveUserProfile(updated)
+                }
             } catch (e: Exception) {
-                // Log or handle
+                android.util.Log.e("MainViewModel", "Erreur Firestore saveUserProfile: ${e.message}")
             }
         }
     }
@@ -402,11 +461,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         _themePreference.value = pref
         val current = _userProfile.value
         if (current != null) {
+            val updated = current.copy(themeMode = pref.code)
+            _userProfile.value = updated
             viewModelScope.launch {
                 try {
-                    firestoreRepo.saveUserProfile(current.copy(themeMode = pref.code))
+                    if (Firebase.auth.currentUser != null) {
+                        firestoreRepo.saveUserProfile(updated)
+                    }
                 } catch (e: Exception) {
-                    // Log or handle
+                    // Ignore
                 }
             }
         }

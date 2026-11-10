@@ -33,7 +33,7 @@ object AuthManager {
                 val value = context.getString(resId)
                 if (value.isNotBlank()) return value
             } catch (e: Exception) {
-                Log.w("AuthManager", "Erreur lors de la lecture de default_web_client_id", e)
+                Log.w("AuthManager", "Erreur lors de la lecture de default_web_client_id: ${e.message}")
             }
         }
         return DEFAULT_WEB_CLIENT_ID
@@ -103,20 +103,40 @@ object AuthManager {
                 if (credential is CustomCredential && credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
                     val googleIdToken = GoogleIdTokenCredential.createFrom(credential.data).idToken
                     val authCredential = GoogleAuthProvider.getCredential(googleIdToken, null)
-                    Firebase.auth.signInWithCredential(authCredential).await()
+                    val authResult = Firebase.auth.signInWithCredential(authCredential).await()
+                    Log.i("AuthManager", "Connexion Firebase réussie: UID=${authResult.user?.uid}, Email=${authResult.user?.email}")
                     onAuthSuccess()
                 } else {
-                    onAuthError("Type d'identifiant Google inattendu.")
+                    onAuthError("Type d'identifiant reçu non compatible (${credential::class.java.simpleName}).")
                 }
             } catch (e: GetCredentialCancellationException) {
-                Log.w("AuthManager", "Connexion Google annulée par l'utilisateur: ${e.message}")
-                onAuthCancelled()
+                Log.w("AuthManager", "GetCredentialCancellationException: ${e.message}", e)
+                val rawMsg = e.message ?: ""
+                when {
+                    rawMsg.contains("10") || rawMsg.contains("DEVELOPER_ERROR") -> {
+                        onAuthError("Erreur Google 10 (Signature SHA-1) : L'APK actuel n'a pas la signature du debug.keystore officiel Firebase. Vous pouvez entrer directement en Mode Local ou recompiler avec le keystore.")
+                    }
+                    rawMsg.contains("12500") -> {
+                        onAuthError("Erreur Google 12500 : Configuration Google Play Services requise. Vous pouvez entrer directement en Mode Local.")
+                    }
+                    rawMsg.contains("7") || rawMsg.contains("NETWORK", ignoreCase = true) -> {
+                        onAuthError("Erreur réseau : Vérifiez votre connexion Internet ou entrez en Mode Local.")
+                    }
+                    rawMsg.contains("16") -> {
+                        onAuthError("Sélection de compte Google interrompue. Vous pouvez réessayer ou entrer en Mode Local.")
+                    }
+                    rawMsg.isBlank() || rawMsg.contains("cancelled", ignoreCase = true) || rawMsg.contains("canceled", ignoreCase = true) -> {
+                        onAuthCancelled()
+                    }
+                    else -> {
+                        onAuthError("Connexion interrompue ($rawMsg). Vous pouvez entrer en Mode Local.")
+                    }
+                }
             } catch (e: Exception) {
                 Log.e("AuthManager", "Échec connexion Google", e)
                 val msg = when {
-                    e.message?.contains("16:") == true -> "Connexion annulée."
-                    e.message?.contains("10:") == true -> "Erreur 10 (SHA-1 non reconnu). Vérifiez la signature debug.keystore."
-                    e.message?.contains("7:") == true -> "Erreur réseau. Vérifiez votre connexion Internet."
+                    e.message?.contains("10") == true -> "Erreur Google 10 (SHA-1 non reconnu). Vous pouvez entrer en Mode Local."
+                    e.message?.contains("7") == true -> "Erreur réseau. Vérifiez votre connexion Internet ou utilisez le Mode Local."
                     else -> e.localizedMessage ?: "Échec de connexion."
                 }
                 onAuthError(msg)
@@ -136,7 +156,11 @@ object AuthManager {
                 } catch (e: Exception) {
                     Log.w("AuthManager", "Impossible d'effacer les identifiants locaux: ${e.message}")
                 } finally {
-                    Firebase.auth.signOut()
+                    try {
+                        Firebase.auth.signOut()
+                    } catch (e: Exception) {
+                        Log.w("AuthManager", "Erreur Firebase.auth.signOut: ${e.message}")
+                    }
                     onSignOutComplete()
                 }
             }

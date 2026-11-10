@@ -75,6 +75,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AppGate(viewModel: MainViewModel) {
+    var isGuestMode by remember { mutableStateOf(false) }
     var currentUser by remember {
         mutableStateOf(
             try {
@@ -112,20 +113,26 @@ fun AppGate(viewModel: MainViewModel) {
         }
     }
 
-    if (currentUser == null) {
+    if (currentUser == null && !isGuestMode) {
         AuthScreen(
             onAuthSuccess = {
                 currentUser = Firebase.auth.currentUser
                 viewModel.onUserAuthenticated()
+            },
+            onContinueGuest = {
+                isGuestMode = true
+                viewModel.onGuestModeActivated()
             }
         )
     } else {
-        val uid = currentUser!!.uid
+        val uid = currentUser?.uid ?: "local_guest"
         key(uid) {
             MainAppScaffold(
                 viewModel = viewModel,
+                isGuest = currentUser == null,
                 onSignedOut = {
                     currentUser = null
+                    isGuestMode = false
                 }
             )
         }
@@ -135,6 +142,7 @@ fun AppGate(viewModel: MainViewModel) {
 @Composable
 fun MainAppScaffold(
     viewModel: MainViewModel,
+    isGuest: Boolean = false,
     onSignedOut: () -> Unit
 ) {
     var currentTab by remember { mutableIntStateOf(0) }
@@ -271,6 +279,7 @@ fun MainAppScaffold(
                 4 -> VisionScreen(viewModel = viewModel)
                 5 -> ProfileScreen(
                     viewModel = viewModel,
+                    isGuest = isGuest,
                     onSignedOut = onSignedOut
                 )
             }
