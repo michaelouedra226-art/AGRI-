@@ -49,6 +49,12 @@ data class VisionUiState(
     val error: String? = null
 )
 
+enum class ThemePreference(val code: String, val title: String, val description: String) {
+    SYSTEM("system", "Système (Automatique)", "Suit les réglages clair/sombre de votre appareil"),
+    LIGHT("light", "Mode Clair", "Interface claire et lumineuse"),
+    DARK("dark", "Mode Sombre", "Interface sombre reposante pour les yeux")
+}
+
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val firestoreRepo = FirestoreRepository(application)
     private val agnesRepo = AgnesAiRepository()
@@ -85,6 +91,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _currentLanguage = MutableStateFlow("fr")
     val currentLanguage: StateFlow<String> = _currentLanguage.asStateFlow()
 
+    // Selected Theme Preference (Clair / Sombre / Système)
+    private val _themePreference = MutableStateFlow(ThemePreference.SYSTEM)
+    val themePreference: StateFlow<ThemePreference> = _themePreference.asStateFlow()
+
     init {
         // Initialize welcome message in Advisor
         val welcomeMsg = ChatMessageItem(
@@ -110,6 +120,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 if (profile != null) {
                     _userProfile.value = profile
                     _currentLanguage.value = profile.preferredLanguage
+                    _themePreference.value = when (profile.themeMode) {
+                        "light" -> ThemePreference.LIGHT
+                        "dark" -> ThemePreference.DARK
+                        else -> ThemePreference.SYSTEM
+                    }
                 } else {
                     // Create default profile for user
                     val defaultProfile = UserProfile(
@@ -371,6 +386,20 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 firestoreRepo.saveUserProfile(updated)
             } catch (e: Exception) {
                 // Log or handle
+            }
+        }
+    }
+
+    fun updateThemePreference(pref: ThemePreference) {
+        _themePreference.value = pref
+        val current = _userProfile.value
+        if (current != null) {
+            viewModelScope.launch {
+                try {
+                    firestoreRepo.saveUserProfile(current.copy(themeMode = pref.code))
+                } catch (e: Exception) {
+                    // Log or handle
+                }
             }
         }
     }

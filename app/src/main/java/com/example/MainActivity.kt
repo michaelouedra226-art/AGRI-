@@ -5,17 +5,16 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.Agriculture
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -25,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
@@ -32,7 +32,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -46,10 +45,8 @@ import com.example.ui.screens.KnowledgeScreen
 import com.example.ui.screens.ProfileScreen
 import com.example.ui.screens.VisionScreen
 import com.example.ui.theme.AgriIaTheme
-import com.example.ui.theme.AgricultureGreen
-import com.example.ui.theme.ForestGreen
-import com.example.ui.theme.FreshGreen
 import com.example.viewmodel.MainViewModel
+import com.example.viewmodel.ThemePreference
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -59,20 +56,32 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            AgriIaTheme {
-                AppGate()
+            val mainViewModel: MainViewModel = viewModel()
+            val themePref by mainViewModel.themePreference.collectAsState()
+            val systemDark = isSystemInDarkTheme()
+            val isDark = when (themePref) {
+                ThemePreference.SYSTEM -> systemDark
+                ThemePreference.LIGHT -> false
+                ThemePreference.DARK -> true
+            }
+
+            AgriIaTheme(darkTheme = isDark) {
+                AppGate(viewModel = mainViewModel)
             }
         }
     }
 }
 
 @Composable
-fun AppGate() {
+fun AppGate(viewModel: MainViewModel) {
     var currentUser by remember { mutableStateOf(Firebase.auth.currentUser) }
 
     DisposableEffect(Unit) {
         val listener = FirebaseAuth.AuthStateListener { auth ->
             currentUser = auth.currentUser
+            if (auth.currentUser != null) {
+                viewModel.onUserAuthenticated()
+            }
         }
         Firebase.auth.addAuthStateListener(listener)
         onDispose {
@@ -84,14 +93,14 @@ fun AppGate() {
         AuthScreen(
             onAuthSuccess = {
                 currentUser = Firebase.auth.currentUser
+                viewModel.onUserAuthenticated()
             }
         )
     } else {
         val uid = currentUser!!.uid
         key(uid) {
-            val mainViewModel: MainViewModel = viewModel()
             MainAppScaffold(
-                viewModel = mainViewModel,
+                viewModel = viewModel,
                 onSignedOut = {
                     currentUser = null
                 }
@@ -114,11 +123,20 @@ fun MainAppScaffold(
         currentTab = 0
     }
 
+    val navBarItemColors = NavigationBarItemDefaults.colors(
+        selectedIconColor = MaterialTheme.colorScheme.primary,
+        selectedTextColor = MaterialTheme.colorScheme.primary,
+        indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+    )
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             NavigationBar(
-                containerColor = Color.White,
+                containerColor = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.onSurface,
                 tonalElevation = 8.dp,
                 modifier = Modifier.testTag("main_bottom_nav")
             ) {
@@ -132,13 +150,7 @@ fun MainAppScaffold(
                         )
                     },
                     label = { Text("Accueil", fontSize = 11.sp, fontWeight = if (currentTab == 0) FontWeight.Bold else FontWeight.Normal) },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = ForestGreen,
-                        selectedTextColor = ForestGreen,
-                        indicatorColor = FreshGreen.copy(alpha = 0.2f),
-                        unselectedIconColor = Color(0xFF64748B),
-                        unselectedTextColor = Color(0xFF64748B)
-                    )
+                    colors = navBarItemColors
                 )
 
                 NavigationBarItem(
@@ -154,13 +166,7 @@ fun MainAppScaffold(
                         )
                     },
                     label = { Text("Assistant", fontSize = 11.sp, fontWeight = if (currentTab == 1) FontWeight.Bold else FontWeight.Normal) },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = ForestGreen,
-                        selectedTextColor = ForestGreen,
-                        indicatorColor = FreshGreen.copy(alpha = 0.2f),
-                        unselectedIconColor = Color(0xFF64748B),
-                        unselectedTextColor = Color(0xFF64748B)
-                    )
+                    colors = navBarItemColors
                 )
 
                 NavigationBarItem(
@@ -173,13 +179,7 @@ fun MainAppScaffold(
                         )
                     },
                     label = { Text("Mon Champ", fontSize = 11.sp, fontWeight = if (currentTab == 2) FontWeight.Bold else FontWeight.Normal) },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = ForestGreen,
-                        selectedTextColor = ForestGreen,
-                        indicatorColor = FreshGreen.copy(alpha = 0.2f),
-                        unselectedIconColor = Color(0xFF64748B),
-                        unselectedTextColor = Color(0xFF64748B)
-                    )
+                    colors = navBarItemColors
                 )
 
                 NavigationBarItem(
@@ -190,18 +190,12 @@ fun MainAppScaffold(
                     },
                     icon = {
                         Icon(
-                            imageVector = Icons.Default.MenuBook,
+                            imageVector = Icons.AutoMirrored.Filled.MenuBook,
                             contentDescription = "Savoir"
                         )
                     },
                     label = { Text("Savoir", fontSize = 11.sp, fontWeight = if (currentTab == 3) FontWeight.Bold else FontWeight.Normal) },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = ForestGreen,
-                        selectedTextColor = ForestGreen,
-                        indicatorColor = FreshGreen.copy(alpha = 0.2f),
-                        unselectedIconColor = Color(0xFF64748B),
-                        unselectedTextColor = Color(0xFF64748B)
-                    )
+                    colors = navBarItemColors
                 )
 
                 NavigationBarItem(
@@ -214,13 +208,7 @@ fun MainAppScaffold(
                         )
                     },
                     label = { Text("Profil", fontSize = 11.sp, fontWeight = if (currentTab == 5) FontWeight.Bold else FontWeight.Normal) },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = ForestGreen,
-                        selectedTextColor = ForestGreen,
-                        indicatorColor = FreshGreen.copy(alpha = 0.2f),
-                        unselectedIconColor = Color(0xFF64748B),
-                        unselectedTextColor = Color(0xFF64748B)
-                    )
+                    colors = navBarItemColors
                 )
             }
         }

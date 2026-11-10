@@ -25,6 +25,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.CloudDone
+import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.Info
@@ -40,7 +41,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
@@ -70,8 +70,8 @@ import com.example.ui.components.SectionHeader
 import com.example.ui.components.StatusBadge
 import com.example.ui.theme.ForestGreen
 import com.example.ui.theme.FreshGreen
-import com.example.ui.theme.WarmSand
 import com.example.viewmodel.MainViewModel
+import com.example.viewmodel.ThemePreference
 
 @Composable
 fun ProfileScreen(
@@ -83,10 +83,12 @@ fun ProfileScreen(
     val credentialManager = remember { CredentialManager.create(context) }
     val userProfile by viewModel.userProfile.collectAsState()
     val currentLang by viewModel.currentLanguage.collectAsState()
+    val currentThemePref by viewModel.themePreference.collectAsState()
 
     var showEditProfileDialog by remember { mutableStateOf(false) }
     var showLanguageDialog by remember { mutableStateOf(false) }
     var showRegionDialog by remember { mutableStateOf(false) }
+    var showThemeDialog by remember { mutableStateOf(false) }
 
     val languages = listOf(
         Triple("fr", "Français", "Langue officielle de travail"),
@@ -114,7 +116,7 @@ fun ProfileScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(WarmSand)
+            .background(MaterialTheme.colorScheme.background)
             .testTag("profile_screen"),
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -201,7 +203,10 @@ fun ProfileScreen(
         item {
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onSurface
+                ),
                 shape = RoundedCornerShape(16.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
@@ -210,7 +215,7 @@ fun ProfileScreen(
                         text = "Fiche de l'exploitation",
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF0F172A)
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     )
                     Spacer(modifier = Modifier.height(10.dp))
@@ -246,15 +251,26 @@ fun ProfileScreen(
         item {
             SectionHeader(
                 title = "Paramètres de l'application",
-                subtitle = "Personnalisation & synchronisation"
+                subtitle = "Personnalisation & affichage"
             )
             Spacer(modifier = Modifier.height(6.dp))
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onSurface
+                ),
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Column(modifier = Modifier.padding(8.dp)) {
+                    // Dark / Light Theme Mode Setting Row
+                    SettingRow(
+                        icon = Icons.Default.DarkMode,
+                        title = "Mode d'affichage (Clair / Sombre)",
+                        subtitle = "${currentThemePref.title} • ${currentThemePref.description}",
+                        onClick = { showThemeDialog = true }
+                    )
+
                     val langLabel = languages.firstOrNull { it.first == currentLang }?.second ?: "Français"
                     SettingRow(
                         icon = Icons.Default.Language,
@@ -298,7 +314,10 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(6.dp))
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onSurface
+                ),
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -309,13 +328,16 @@ fun ProfileScreen(
                             text = "AGRI-IA v1.0",
                             style = MaterialTheme.typography.titleSmall.copy(
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF0F172A)
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         )
                     }
                     Text(
                         text = "Plateforme technologique agricole et assistant intelligent pour le Burkina Faso et l'Afrique de l'Ouest. Développé pour aider les producteurs dans la gestion de leurs parcelles, le diagnostic phytosanitaire et l'optimisation des intrants.",
-                        style = MaterialTheme.typography.bodySmall.copy(color = Color(0xFF334155), lineHeight = 19.sp)
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            lineHeight = 19.sp
+                        )
                     )
                 }
             }
@@ -350,6 +372,66 @@ fun ProfileScreen(
         item { Spacer(modifier = Modifier.height(40.dp)) }
     }
 
+    // Theme Selection Dialog (Mode Sombre / Clair / Système)
+    if (showThemeDialog) {
+        AlertDialog(
+            onDismissRequest = { showThemeDialog = false },
+            title = {
+                Text(
+                    text = "Mode d'affichage",
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    ThemePreference.entries.forEach { pref ->
+                        val isSelected = currentThemePref == pref
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(10.dp))
+                                .clickable {
+                                    viewModel.updateThemePreference(pref)
+                                    showThemeDialog = false
+                                }
+                                .padding(vertical = 10.dp, horizontal = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = isSelected,
+                                onClick = {
+                                    viewModel.updateThemePreference(pref)
+                                    showThemeDialog = false
+                                },
+                                colors = RadioButtonDefaults.colors(selectedColor = ForestGreen)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Column {
+                                Text(
+                                    text = pref.title,
+                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                                    fontSize = 14.sp,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text(
+                                    text = pref.description,
+                                    fontSize = 11.sp,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showThemeDialog = false }) {
+                    Text("Fermer", color = ForestGreen, fontWeight = FontWeight.Bold)
+                }
+            }
+        )
+    }
+
     // Edit Profile Dialog
     if (showEditProfileDialog) {
         var inputName by remember { mutableStateOf(userProfile?.name ?: "") }
@@ -360,12 +442,12 @@ fun ProfileScreen(
         var inputExperience by remember { mutableStateOf(userProfile?.experienceLevel ?: "Intermédiaire") }
 
         val textFieldColors = OutlinedTextFieldDefaults.colors(
-            focusedTextColor = Color(0xFF0F172A),
-            unfocusedTextColor = Color(0xFF0F172A),
+            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
             focusedLabelColor = ForestGreen,
-            unfocusedLabelColor = Color(0xFF475569),
+            unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
             focusedBorderColor = ForestGreen,
-            unfocusedBorderColor = Color(0xFFCBD5E1)
+            unfocusedBorderColor = MaterialTheme.colorScheme.outline
         )
 
         AlertDialog(
@@ -374,7 +456,7 @@ fun ProfileScreen(
                 Text(
                     text = "Modifier mes informations agricoles",
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF0F172A)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             },
             text = {
@@ -455,7 +537,7 @@ fun ProfileScreen(
             },
             dismissButton = {
                 TextButton(onClick = { showEditProfileDialog = false }) {
-                    Text("Annuler", color = Color(0xFF64748B))
+                    Text("Annuler", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         )
@@ -469,7 +551,7 @@ fun ProfileScreen(
                 Text(
                     text = "Sélectionnez la langue",
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF0F172A)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             },
             text = {
@@ -495,8 +577,8 @@ fun ProfileScreen(
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Column {
-                                Text(text = name, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color(0xFF0F172A))
-                                Text(text = desc, fontSize = 11.sp, color = Color(0xFF64748B))
+                                Text(text = name, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface)
+                                Text(text = desc, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
                         }
                     }
@@ -516,7 +598,7 @@ fun ProfileScreen(
                 Text(
                     text = "Votre Région Agroécologique",
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF0F172A)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             },
             text = {
@@ -546,7 +628,7 @@ fun ProfileScreen(
                                 text = reg,
                                 fontSize = 14.sp,
                                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                                color = Color(0xFF0F172A)
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         }
                     }
@@ -575,20 +657,20 @@ private fun ProfileDetailRow(
             modifier = Modifier
                 .size(36.dp)
                 .clip(CircleShape)
-                .background(Color(0xFFE8F5E9)),
+                .background(MaterialTheme.colorScheme.primaryContainer),
             contentAlignment = Alignment.Center
         ) {
-            Icon(imageVector = icon, contentDescription = null, tint = ForestGreen, modifier = Modifier.size(20.dp))
+            Icon(imageVector = icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
         }
         Spacer(modifier = Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.labelSmall.copy(color = Color(0xFF64748B), fontWeight = FontWeight.SemiBold)
+                style = MaterialTheme.typography.labelSmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.SemiBold)
             )
             Text(
                 text = value,
-                style = MaterialTheme.typography.bodyMedium.copy(color = Color(0xFF0F172A), fontWeight = FontWeight.Medium)
+                style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Medium)
             )
         }
     }
@@ -612,10 +694,10 @@ private fun SettingRow(
             modifier = Modifier
                 .size(38.dp)
                 .clip(CircleShape)
-                .background(Color(0xFFF1F5F9)),
+                .background(MaterialTheme.colorScheme.surfaceVariant),
             contentAlignment = Alignment.Center
         ) {
-            Icon(imageVector = icon, contentDescription = null, tint = ForestGreen, modifier = Modifier.size(20.dp))
+            Icon(imageVector = icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
         }
         Spacer(modifier = Modifier.width(14.dp))
         Column(modifier = Modifier.weight(1f)) {
@@ -623,12 +705,12 @@ private fun SettingRow(
                 text = title,
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF0F172A)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             )
             Text(
                 text = subtitle,
-                style = MaterialTheme.typography.bodySmall.copy(color = Color(0xFF64748B))
+                style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
             )
         }
     }

@@ -1,0 +1,85 @@
+name: Android CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build APK Debug
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@v4
+
+      - name: Installer Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: gradle
+
+      - name: Installer Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Installer les composants Android requis
+        run: |
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager \
+            "platform-tools" \
+            "platforms;android-36.1" \
+            "build-tools;36.0.0"
+
+      - name: Préparer les fichiers de configuration
+        env:
+          GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
+          AGNES_API_KEY: ${{ secrets.AGNES_API_KEY }}
+          AGNES_API_BASE_URL: ${{ secrets.AGNES_API_BASE_URL }}
+        run: |
+          if [ -n "$GOOGLE_SERVICES_JSON_BASE64" ]; then
+            echo "$GOOGLE_SERVICES_JSON_BASE64" | base64 --decode > app/google-services.json
+          fi
+
+          cat > .env <<EOF
+          AGNES_API_KEY="${AGNES_API_KEY:-sk-opbUSSdj6xQlAeDdQwu79jTDGs34cw5kfH5Zc7DGDi7fub3H}"
+          AGNES_API_BASE_URL="${AGNES_API_BASE_URL:-https://apihub.agnes-ai.com/v1/}"
+          EOF
+
+      - name: Créer le keystore debug
+        run: |
+          if [ ! -f debug.keystore ]; then
+            keytool -genkeypair \
+              -v \
+              -keystore debug.keystore \
+              -storepass android \
+              -alias androiddebugkey \
+              -keypass android \
+              -keyalg RSA \
+              -keysize 2048 \
+              -validity 10000 \
+              -dname "CN=Android Debug,O=Android,C=US"
+          fi
+
+      - name: Autoriser Gradle
+        run: chmod +x gradlew
+
+      - name: Compiler l’application Debug
+        run: ./gradlew --no-daemon assembleDebug --stacktrace
+
+      - name: Publier l’APK Debug
+        uses: actions/upload-artifact@v4
+        with:
+          name: agri-ia-debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error

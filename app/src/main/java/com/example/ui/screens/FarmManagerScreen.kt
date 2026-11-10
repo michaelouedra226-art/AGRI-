@@ -24,8 +24,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Agriculture
-import androidx.compose.material.icons.filled.Assignment
+import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Eco
@@ -86,7 +85,7 @@ fun FarmManagerScreen(
     var selectedTab by remember { mutableIntStateOf(0) }
     val tabItems = listOf(
         Pair("Parcelles", Icons.Default.Grass),
-        Pair("Journal", Icons.Default.Assignment),
+        Pair("Journal", Icons.AutoMirrored.Filled.Assignment),
         Pair("Élevage", Icons.Default.Pets)
     )
 
@@ -479,7 +478,7 @@ private fun InterventionsTabContent(
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Assignment,
+                                imageVector = Icons.AutoMirrored.Filled.Assignment,
                                 contentDescription = null,
                                 tint = ForestGreen,
                                 modifier = Modifier.size(32.dp)

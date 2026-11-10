@@ -18,6 +18,7 @@ data class UserProfile(
     val communeOrVillage: String = "",
     val farmObjective: String = "Augmenter le rendement et réduire les coûts",
     val primaryActivities: List<String> = emptyList(),
+    val themeMode: String = "system", // system, light, dark
     @ServerTimestamp val createdAt: Timestamp? = null,
     @ServerTimestamp val updatedAt: Timestamp? = null
 )

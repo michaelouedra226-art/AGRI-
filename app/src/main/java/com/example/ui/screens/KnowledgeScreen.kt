@@ -98,13 +98,13 @@ fun KnowledgeScreen(
         TabInfo("Cultures", Icons.Default.Grass),
         TabInfo("Élevage", Icons.Default.Pets),
         TabInfo("Eau & Sol", Icons.Default.WaterDrop),
-        TabInfo("Marchés", Icons.Default.TrendingUp)
+        TabInfo("Marchés", Icons.AutoMirrored.Filled.TrendingUp)
     )
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(WarmSand)
+            .background(MaterialTheme.colorScheme.background)
             .testTag("knowledge_screen")
     ) {
         // Top Banner with high contrast
@@ -131,8 +131,8 @@ fun KnowledgeScreen(
 
         TabRow(
             selectedTabIndex = selectedTab,
-            containerColor = Color.White,
-            contentColor = ForestGreen
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.primary
         ) {
             tabs.forEachIndexed { index, tab ->
                 val isSelected = selectedTab == index
@@ -204,7 +204,10 @@ private fun CropCardItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { expanded = !expanded },
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        ),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -344,7 +347,10 @@ private fun LivestockGuideTab(
         items(items, key = { it.id }) { animal ->
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        ),
                 shape = RoundedCornerShape(16.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
@@ -436,7 +442,10 @@ private fun WaterCalculatorTab(viewModel: MainViewModel) {
         item {
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        ),
                 shape = RoundedCornerShape(16.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
@@ -638,7 +647,10 @@ private fun MarketAndProfitTab(viewModel: MainViewModel) {
         items(prices) { item ->
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        ),
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Row(
@@ -704,7 +716,10 @@ private fun MarketAndProfitTab(viewModel: MainViewModel) {
             Spacer(modifier = Modifier.height(6.dp))
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        ),
                 shape = RoundedCornerShape(16.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {

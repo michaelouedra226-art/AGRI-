@@ -8,7 +8,6 @@ import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialCancellationException
-import com.example.R
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
@@ -24,6 +23,19 @@ import kotlinx.coroutines.withContext
 
 object AuthManager {
 
+    fun getWebClientId(context: Context): String? {
+        val resId = context.resources.getIdentifier("default_web_client_id", "string", context.packageName)
+        if (resId != 0) {
+            try {
+                val value = context.getString(resId)
+                if (value.isNotBlank()) return value
+            } catch (e: Exception) {
+                Log.w("AuthManager", "Erreur lors de la lecture de default_web_client_id", e)
+            }
+        }
+        return null
+    }
+
     fun attemptAutoSignIn(
         context: Context,
         credentialManager: CredentialManager,
@@ -36,10 +48,8 @@ object AuthManager {
             return
         }
 
-        val clientId = try {
-            context.getString(R.string.default_web_client_id)
-        } catch (e: Exception) {
-            Log.w("AuthManager", "default_web_client_id non disponible", e)
+        val clientId = getWebClientId(context) ?: run {
+            Log.w("AuthManager", "default_web_client_id non disponible")
             onUnauthenticated()
             return
         }
@@ -80,10 +90,8 @@ object AuthManager {
         onAuthCancelled: () -> Unit,
         scope: CoroutineScope
     ) {
-        val clientId = try {
-            activity.getString(R.string.default_web_client_id)
-        } catch (e: Exception) {
-            onAuthError("Configuration Google Sign-In introuvable (default_web_client_id manquant).")
+        val clientId = getWebClientId(activity) ?: run {
+            onAuthError("Configuration Google Sign-In introuvable (fichier google-services.json manquant ou default_web_client_id non configuré).")
             return
         }
 
