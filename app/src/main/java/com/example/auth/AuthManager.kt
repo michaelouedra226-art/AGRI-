@@ -23,7 +23,10 @@ import kotlinx.coroutines.withContext
 
 object AuthManager {
 
-    fun getWebClientId(context: Context): String? {
+    // Web Client ID Firebase officiel (OAuth 2.0 Web Client)
+    const val DEFAULT_WEB_CLIENT_ID = "405168602623-kf2tpr1h9kpfmmk9kg72rmibs7fpt4it.apps.googleusercontent.com"
+
+    fun getWebClientId(context: Context): String {
         val resId = context.resources.getIdentifier("default_web_client_id", "string", context.packageName)
         if (resId != 0) {
             try {
@@ -33,7 +36,7 @@ object AuthManager {
                 Log.w("AuthManager", "Erreur lors de la lecture de default_web_client_id", e)
             }
         }
-        return null
+        return DEFAULT_WEB_CLIENT_ID
     }
 
     fun attemptAutoSignIn(
@@ -48,11 +51,7 @@ object AuthManager {
             return
         }
 
-        val clientId = getWebClientId(context) ?: run {
-            Log.w("AuthManager", "default_web_client_id non disponible")
-            onUnauthenticated()
-            return
-        }
+        val clientId = getWebClientId(context)
 
         val googleIdOption = GetGoogleIdOption.Builder()
             .setFilterByAuthorizedAccounts(true)
@@ -90,10 +89,7 @@ object AuthManager {
         onAuthCancelled: () -> Unit,
         scope: CoroutineScope
     ) {
-        val clientId = getWebClientId(activity) ?: run {
-            onAuthError("Configuration Google Sign-In introuvable (fichier google-services.json manquant ou default_web_client_id non configuré).")
-            return
-        }
+        val clientId = getWebClientId(activity)
 
         val signInOption = GetSignInWithGoogleOption.Builder(serverClientId = clientId).build()
         val request = GetCredentialRequest.Builder()
@@ -117,7 +113,13 @@ object AuthManager {
                 onAuthCancelled()
             } catch (e: Exception) {
                 Log.e("AuthManager", "Échec connexion Google", e)
-                onAuthError(e.localizedMessage ?: "Échec de connexion.")
+                val msg = when {
+                    e.message?.contains("16:") == true -> "Connexion annulée."
+                    e.message?.contains("10:") == true -> "Erreur 10 (SHA-1 non reconnu). Vérifiez la signature debug.keystore."
+                    e.message?.contains("7:") == true -> "Erreur réseau. Vérifiez votre connexion Internet."
+                    else -> e.localizedMessage ?: "Échec de connexion."
+                }
+                onAuthError(msg)
             }
         }
     }

@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="firestore_database_id" translatable="false">ai-studio-android-agriia-d01a091e-4bec-4b59-bcf9-0729154c38c4</string>
+    <string name="default_web_client_id" translatable="false">405168602623-kf2tpr1h9kpfmmk9kg72rmibs7fpt4it.apps.googleusercontent.com</string>
+    <string name="google_app_id" translatable="false">1:405168602623:android:a2947fef57f9c056593bca</string>
+    <string name="gcm_defaultSenderId" translatable="false">405168602623</string>
+    <string name="google_api_key" translatable="false">AIzaSyCN-4GwEy7g57lu2g8HiZNch_LugRy-tFM</string>
+    <string name="project_id" translatable="false">gen-lang-client-0190245043</string>
+    <string name="google_storage_bucket" translatable="false">gen-lang-client-0190245043.firebasestorage.app</string>
 </resources>
