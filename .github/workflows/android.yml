@@ -45,8 +45,8 @@ jobs:
           fi
 
           cat > .env <<EOF
-          AGNES_API_KEY="${AGNES_API_KEY:-sk-opbUSSdj6xQlAeDdQwu79jTDGs34cw5kfH5Zc7DGDi7fub3H}"
-          AGNES_API_BASE_URL="${AGNES_API_BASE_URL:-https://apihub.agnes-ai.com/v1/}"
+          AGNES_API_KEY=${AGNES_API_KEY:-sk-opbUSSdj6xQlAeDdQwu79jTDGs34cw5kfH5Zc7DGDi7fub3H}
+          AGNES_API_BASE_URL=${AGNES_API_BASE_URL:-https://apihub.agnes-ai.com/v1/}
           EOF
 
       - name: Créer le keystore debug

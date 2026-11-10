@@ -104,8 +104,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         _advisorState.value = AdvisorUiState(messages = listOf(welcomeMsg))
 
         // Start listening to Firestore if user is already authenticated
-        if (Firebase.auth.currentUser != null) {
-            initUserDataObservers()
+        try {
+            if (Firebase.auth.currentUser != null) {
+                initUserDataObservers()
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("MainViewModel", "Erreur vérification auth au démarrage: ${e.message}", e)
         }
     }
 
@@ -114,7 +118,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun initUserDataObservers() {
-        val user = Firebase.auth.currentUser ?: return
+        val user = try {
+            Firebase.auth.currentUser
+        } catch (e: Exception) {
+            null
+        } ?: return
         viewModelScope.launch {
             firestoreRepo.observeUserProfile().collectLatest { profile ->
                 if (profile != null) {

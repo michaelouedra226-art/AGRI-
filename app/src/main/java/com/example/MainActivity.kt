@@ -54,6 +54,7 @@ import com.google.firebase.auth.auth
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AgriApplication.ensureFirebase(applicationContext)
         enableEdgeToEdge()
         setContent {
             val mainViewModel: MainViewModel = viewModel()
@@ -74,18 +75,40 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AppGate(viewModel: MainViewModel) {
-    var currentUser by remember { mutableStateOf(Firebase.auth.currentUser) }
+    var currentUser by remember {
+        mutableStateOf(
+            try {
+                Firebase.auth.currentUser
+            } catch (e: Exception) {
+                android.util.Log.e("MainActivity", "Erreur lecture currentUser: ${e.message}", e)
+                null
+            }
+        )
+    }
 
     DisposableEffect(Unit) {
-        val listener = FirebaseAuth.AuthStateListener { auth ->
-            currentUser = auth.currentUser
-            if (auth.currentUser != null) {
-                viewModel.onUserAuthenticated()
+        val listener = try {
+            val l = FirebaseAuth.AuthStateListener { auth ->
+                currentUser = auth.currentUser
+                if (auth.currentUser != null) {
+                    viewModel.onUserAuthenticated()
+                }
             }
+            Firebase.auth.addAuthStateListener(l)
+            l
+        } catch (e: Exception) {
+            android.util.Log.e("MainActivity", "Erreur addAuthStateListener: ${e.message}", e)
+            null
         }
-        Firebase.auth.addAuthStateListener(listener)
+
         onDispose {
-            Firebase.auth.removeAuthStateListener(listener)
+            listener?.let {
+                try {
+                    Firebase.auth.removeAuthStateListener(it)
+                } catch (e: Exception) {
+                    // Ignore
+                }
+            }
         }
     }
 

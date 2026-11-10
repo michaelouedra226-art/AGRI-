@@ -25,10 +25,24 @@ import kotlinx.coroutines.tasks.await
 class FirestoreRepository(private val db: FirebaseFirestore) {
 
     constructor(context: Context) : this(
-        FirebaseFirestore.getInstance(
-            context.applicationContext.getString(R.string.firestore_database_id)
-        )
+        getSafeFirestoreInstance(context)
     )
+
+    companion object {
+        fun getSafeFirestoreInstance(context: Context): FirebaseFirestore {
+            return try {
+                val dbId = try {
+                    context.applicationContext.getString(R.string.firestore_database_id)
+                } catch (e: Exception) {
+                    "ai-studio-android-agriia-d01a091e-4bec-4b59-bcf9-0729154c38c4"
+                }
+                FirebaseFirestore.getInstance(dbId)
+            } catch (e: Exception) {
+                Log.w("FirestoreRepo", "Repli sur instance Firestore par défaut: ${e.message}")
+                FirebaseFirestore.getInstance()
+            }
+        }
+    }
 
     private val auth = Firebase.auth
 
